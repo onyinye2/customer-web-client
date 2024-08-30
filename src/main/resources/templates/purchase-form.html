@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">    
+    <head>
+        <!--<meta charset="ISO-8859-1" />-->
+        
+        <title>Purchase Form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+        html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif; text-align: center}
+        </style>
+    </head>
+    <body class="w3-light-grey">
+        <h1>Purchase Form</h1>
+        <form >
+            <table border="1">
+                <tr>
+                    <td><label th:text="Id" /></td>
+                    <td><input type="number" id="id"/></td>
+                </tr>
+                <tr>
+                    <td><label th:text="Quantity" /></td>
+                    <td><input id="quantity" type="number"  onchange="updateTotal(this.value)"/></td>
+                </tr>
+                <tr>
+                    <td><label th:text="Total" /></td>
+                    <td><input id="total" type="number" disabled="true"/></td>
+                </tr>
+                <tr>
+                    <td><label th:text="Purchase" /></td>
+                    <td><!--<input id="purchase" type="text" th:field="*{tName}" disabled="true"/>-->
+                        <input id="option1" type="radio"  name="ptype" value="regular" disabled/>Regular
+                        <input id="option2" type="radio"  name="ptype" value="credit" disabled/>Credit
+                    </td>
+                </tr>
+             
+            </table>
+            <!-- 
+            I realized that I cannot use values from the page in the url... so i had to use js to make
+            a request outside of the form... to /web/customer not /customer on 8080... i got a cors thing
+            the request body is a transaction object... it was helpful in sending objects with more than one value
+            to the api... which would probably be done in the future.
+            i used radio buttons instead of buttons... it's still inactive when needed though
+            -->
+            
+        </form>
+        <button id="purchaseBtn" onclick="makePurchase()" disabled>
+            Make Purchase
+        </button>
+        <p id="outputElement"></p>
+        <button>
+            <a th:href="@{/web/customers}">Back to Customers</a>
+        </button>
+        
+        <script>
+            function updateTotal(value){
+                document.getElementById("total").value = value * 25;
+                if(value <= 0){
+                    document.getElementById("purchaseBtn").disabled = true;
+                    var el = document.getElementsByName('ptype');
+                    for(i = 0; i < el.length; i++){
+                        el[i].disabled = true;
+                    }
+                }else{
+                    document.getElementById("purchaseBtn").disabled = false;
+                    var el = document.getElementsByName('ptype');
+                    for(i = 0; i < el.length; i++){
+                        el[i].disabled = false;
+                    }
+                }
+            }
+        
+            function getPType(){
+                var el = document.getElementsByName('ptype');
+                let p = "";
+                for(i = 0; i < el.length; i++){
+                    if(el[i].checked){
+                        p = el[i].value;
+                    }
+                }
+                if(p == "regular"){
+                    return "/makePurchase";
+                }else if(p == "credit"){
+                    return "/makePurchaseWC";
+                }else{
+                    return "/makePurchaseForm";
+                }
+            }
+
+            function makePurchase(){
+                let ptype = getPType();
+                
+                const apiUrl = 'http://localhost:8081/web/customers' + ptype; //not https
+                const data = {
+                id : document.getElementById("id").value,
+                quantity: document.getElementById("quantity").value,
+                total: document.getElementById("total").value,
+                tName: ''
+                };
+
+                const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data),
+                };
+
+                fetch(apiUrl, requestOptions)
+                .then(data =>{
+                    let val = JSON.stringify(data, null, 2);
+                    if(val){
+                        document.getElementById("outputElement").textContent = "Successful Purchase. Return to Customers.";
+                    }else{
+                        document.getElementById("outputElement").textContent = "Failure. Check ID and Value before Submitting.";
+                    }
+                    
+                });
+                /*.then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    outputElement.textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error
+
+                ('Error:', error);
+                });*/
+            }
+        </script>
+    </body>
+</html>

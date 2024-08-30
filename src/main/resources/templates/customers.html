@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">    
+    <head>
+        <title>Customers</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+        html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif;}
+        div {width: 100%;}
+        </style>
+</head>
+    </head>
+    <body class="w3-light-grey">
+        <div class="w3-main" >
+            <h1>Customers</h1>
+            <div class="w3-container">        
+               
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th> Id </th>
+                            <th> Name </th>
+                            <th> Total Sales </th>
+                            <th> Balance Due </th>
+                            <th> Edit </th>
+                            <th> Delete </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${customers.length < 1}">
+                            <td colspan="2"> No Customers Available </td>
+                        </tr>
+                        <tr th:each="customer : ${customers}">
+                            <td><span th:text="${customer.id}"> Id </span></td>
+                            <td><span th:text="${customer.name}"> Name </span></td>
+                            <td><span th:text="${customer.total_sales}"> Total Sales </span></td>
+                            <td><span th:text="${customer.balance_due}"> Balance Due </span></td>
+                            <td>
+                                <span>
+                                <a th:href="@{/web/customers/edit/{id}(id=${customer.id})}">Edit</a> 
+                                </span>
+                            </td>
+                            <td>
+                                <span>
+                                <a th:href="@{/web/customers/delete/{id}(id=${customer.id})}">Delete</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                
+            </div>
+            <button>
+                <a th:href="@{/web/customers/create}">Create Customer</a>
+            </button>
+            <button>
+                <a th:href="@{/web/customers/makePurchaseForm}">Make Purchase</a>
+            </button>
+            <button>
+                <a th:href="@{/web/customers/makePaymentForm}">Make Payment</a>
+            </button>
+        </div>
+        
+    <body>
+
+</html>

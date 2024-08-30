@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">    
+    <head>
+        
+        <title>Payment Form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+        html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif; text-align: center}
+        </style>
+    </head>
+    <body class="w3-light-grey">
+        <h1>Payment Form</h1>
+        <form >
+            <table border="1">
+                <tr>
+                    <td><label th:text="Id" /></td>
+                    <td><input type="number" id="id"/></td>
+                </tr>
+                <tr>
+                    <td><label th:text="Amount" /></td>
+                    <td><input id="amount" type="number" onchange="update(this.value)"/></td>
+                </tr>
+             
+            </table>
+            
+        </form>
+        <button id="payBtn" onclick="makePayment()" disabled>
+            Make Payment
+        </button>
+        <p id="outputElement"></p>
+        <button>
+            <a th:href="@{/web/customers}">Back to Customers</a>
+        </button>
+        <script>
+            function update(value){
+                //document.getElementById("amount").value = value * 25;
+                if(value <= 0){
+                    document.getElementById("payBtn").disabled = true;
+                    //document.getElementsByName("ptype").disabled = true;
+
+                }else{
+                    document.getElementById("payBtn").disabled = false;
+                    //document.getElementsByName("ptype").disabled = false;
+                }
+            }
+
+            function makePayment(){
+                
+                
+                const apiUrl = 'http://localhost:8081/web/customers/makePayment'; //not https
+                const data = {
+                id : document.getElementById("id").value,
+                quantity: 0,
+                total: document.getElementById("amount").value,
+                tName: ''
+                };
+
+                const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data),
+                };
+
+                fetch(apiUrl, requestOptions)
+                .then(data =>{
+                    let val = JSON.stringify(data, null, 2);
+                    document.getElementById("outputElement").textContent = JSON.stringify(data, null, 2);
+                });
+                /*.then(response => {
+                    if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    outputElement.textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error
+
+                ('Error:', error);
+                });*/
+            }
+        </script>
+    </body>
+</html>

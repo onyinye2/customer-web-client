@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">    
+    <head>
+        
+        <title>Customer Form</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+        html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif; text-align: center}
+        </style>
+    </head>
+    <body class="w3-light-grey">
+        <h1>Customer Form</h1>
+        <form action="#" th:action="@{${customer.id} !=null ? '/web/customers/update/' + ${customer.id} : '/web/customers/saveCustomer'}" th:object="${customer}" method="post">
+            <table border="1">
+                <tr>
+                    <td><label th:text="Id" /></td>
+                    <td><input type="number" th:field="*{id}" disabled="disabled"/></td>
+                </tr>
+                <tr>
+                    <td><label th:text="Name" /></td>
+                    <td><input type="text" th:field="*{name}" /></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit"  /></td>
+                </tr>
+            </table>
+        </form>
+        <button>
+            <a th:href="@{/web/customers}">Back to Customers</a>
+        </button>
+    </body>
+</html>
